@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class setting extends StatefulWidget {
+class Setting extends StatefulWidget {
   @override
-  _settingState createState() => _settingState();
+  _SettingState createState() => _SettingState();
 }
 
-class _settingState extends State<setting> {
+class _SettingState extends State<Setting> {
   int go;
 
   ect(double top) => Container(margin: EdgeInsets.only(top: top));
@@ -14,7 +14,7 @@ class _settingState extends State<setting> {
   @override
   void initState() async {
     await _getPref();
-    print("haii" + go.toString());
+    print(go.toString());
     super.initState();
   }
 

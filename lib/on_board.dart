@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class onBoard extends StatefulWidget {
+class OnBoard extends StatefulWidget {
   @override
-  _onBoardState createState() => _onBoardState();
+  _OnBoardState createState() => _OnBoardState();
 }
 
-class _onBoardState extends State<onBoard> {
+class _OnBoardState extends State<OnBoard> {
   int a = 0;
 
   ect(double top) => Container(margin: EdgeInsets.only(top: top));
@@ -27,24 +27,12 @@ class _onBoardState extends State<onBoard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           ect(70),
-          Row(
-            children: <Widget>[
-              ecl(30),
-              _startedText(),
-            ],
-          ),
+          Row(children: <Widget>[ecl(30), _startedText()]),
           ect(10),
-          Row(
-            children: <Widget>[
-              ecl(30),
-              _selectText(),
-            ],
-          ),
+          Row(children: <Widget>[ecl(30), _selectText()]),
           ect(20),
           Center(child: _selectLitre()),
-          Center(
-            child: _glassText(),
-          ),
+          Center(child: _glassText()),
           ect(30),
           Row(
             children: <Widget>[
@@ -55,9 +43,7 @@ class _onBoardState extends State<onBoard> {
             ],
           ),
           ect(140),
-          Center(
-            child: _doneButton(),
-          )
+          Center(child: _doneButton())
         ],
       )),
     );
@@ -85,7 +71,7 @@ class _onBoardState extends State<onBoard> {
   }
 
   Widget _glassText() {
-    int b = (a * 1000 / 200).toInt();
+    int b = a * 1000 ~/ 200;
     return Text(
       "$b glasses per day",
       style: TextStyle(fontSize: 18, color: Color.fromRGBO(0, 0, 0, 1)),
@@ -130,7 +116,7 @@ class _onBoardState extends State<onBoard> {
 
   Widget _doneButton() {
     return RawMaterialButton(
-      onPressed: () async{
+      onPressed: () async {
         await _setSharedPref();
         Navigator.of(context).pushNamed('/mainscreen');
       },
