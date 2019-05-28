@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'theme.dart';
+import 'package:provider/provider.dart';
 
 class Setting extends StatefulWidget {
   @override
@@ -7,13 +10,15 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
-  int go;
+  int go, delay = 0;
+  bool isdark = false;
 
   ect(double top) => Container(margin: EdgeInsets.only(top: top));
   ecl(double left) => Container(margin: EdgeInsets.only(left: left));
   @override
-  void initState() async {
-    await _getPref();
+  void initState() {
+    _getPref();
+    _setSharedPref();
     print(go.toString());
     super.initState();
   }
@@ -61,7 +66,9 @@ class _SettingState extends State<Setting> {
           ),
           ect(30),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pushNamed('/change_notification');
+            },
             child: Row(
               children: <Widget>[
                 ecl(30),
@@ -78,17 +85,26 @@ class _SettingState extends State<Setting> {
               showDialog(
                 context: context,
                 child: AlertDialog(
-                  title: Text('Do you want to exit this application?'),
+                  title: Text(
+                    'Do you want to erase the data?',
+                    style: TextStyle(fontFamily: 'Muli-Bold'),
+                  ),
                   actions: <Widget>[
                     FlatButton(
                       onPressed: () => Navigator.of(context).pop(false),
-                      child: Text('No'),
+                      child: Text(
+                        'No',
+                        style: TextStyle(fontFamily: 'Muli-Bold'),
+                      ),
                     ),
                     FlatButton(
                       onPressed: () {
                         Navigator.of(context).pushNamed("/onBoard");
                       },
-                      child: Text('Yes'),
+                      child: Text(
+                        'Yes',
+                        style: TextStyle(fontFamily: 'Muli-Bold'),
+                      ),
                     ),
                   ],
                 ),
@@ -106,11 +122,17 @@ class _SettingState extends State<Setting> {
           ),
           ect(30),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              ThemeChanger _themeChanger = Provider.of<ThemeChanger>(context);
+              _themeChanger.setTheme(
+                  _themeChanger.getTheme() == ThemeData.dark()
+                      ? ThemeData.light()
+                      : ThemeData.dark());
+            },
             child: Row(
               children: <Widget>[
                 ecl(30),
-                _theme(),
+                _theme(context),
                 Row(
                   children: <Widget>[ecl(80), _rightArrowIcon()],
                 ),
@@ -149,21 +171,30 @@ class _SettingState extends State<Setting> {
   Widget _settingText() {
     return Text(
       "Settings",
-      style: TextStyle(color: Color.fromRGBO(0, 0, 0, 1), fontSize: 48),
+      style: TextStyle(
+          color: Color.fromRGBO(0, 0, 0, 1),
+          fontSize: 48,
+          fontFamily: 'Muli-Bold'),
     );
   }
 
   Widget _changelimitText() {
     return Text(
       "Change your daily target",
-      style: TextStyle(color: Color.fromRGBO(0, 128, 255, 1), fontSize: 18),
+      style: TextStyle(
+          color: Color.fromRGBO(0, 128, 255, 1),
+          fontSize: 18,
+          fontFamily: 'Muli-Bold'),
     );
   }
 
   Widget _changelimitSubText() {
     return Text(
-      "Currently set to 2 litres per day",
-      style: TextStyle(color: Color.fromRGBO(93, 93, 93, 1), fontSize: 12),
+      "Currently set to $go litres per day",
+      style: TextStyle(
+          color: Color.fromRGBO(93, 93, 93, 1),
+          fontSize: 12,
+          fontFamily: 'Muli-Bold'),
     );
   }
 
@@ -187,14 +218,20 @@ class _SettingState extends State<Setting> {
   Widget _changeNotificationText() {
     return Text(
       "Change notifications settings",
-      style: TextStyle(color: Color.fromRGBO(0, 128, 255, 1), fontSize: 18),
+      style: TextStyle(
+          color: Color.fromRGBO(0, 128, 255, 1),
+          fontSize: 18,
+          fontFamily: 'Muli-Bold'),
     );
   }
 
   Widget _changeNotificationSubText() {
     return Text(
       "Edit your notifications settings",
-      style: TextStyle(color: Color.fromRGBO(93, 93, 93, 1), fontSize: 12),
+      style: TextStyle(
+          color: Color.fromRGBO(93, 93, 93, 1),
+          fontSize: 12,
+          fontFamily: 'Muli-Bold'),
     );
   }
 
@@ -213,42 +250,60 @@ class _SettingState extends State<Setting> {
   Widget _resetText() {
     return Text(
       "Reset my account",
-      style: TextStyle(color: Color.fromRGBO(0, 128, 255, 1), fontSize: 18),
+      style: TextStyle(
+          color: Color.fromRGBO(0, 128, 255, 1),
+          fontSize: 18,
+          fontFamily: 'Muli-Bold'),
     );
   }
 
   Widget _resetSubText() {
     return Text(
       "This will erase the app data",
-      style: TextStyle(color: Color.fromRGBO(93, 93, 93, 1), fontSize: 12),
+      style: TextStyle(
+          color: Color.fromRGBO(93, 93, 93, 1),
+          fontSize: 12,
+          fontFamily: 'Muli-Bold'),
     );
   }
 
-  Widget _themeText() {
+  Widget _themeText(String t) {
     return Text(
-      "Switch to Dark Theme",
-      style: TextStyle(color: Color.fromRGBO(0, 128, 255, 1), fontSize: 18),
+      "$t",
+      style: TextStyle(
+          color: Color.fromRGBO(0, 128, 255, 1),
+          fontSize: 18,
+          fontFamily: 'Muli-Bold'),
     );
   }
 
-  Widget _themeSubText() {
+  Widget _themeSubText(String text) {
     return Text(
-      "Change app theme to dark mode",
-      style: TextStyle(color: Color.fromRGBO(93, 93, 93, 1), fontSize: 12),
+      "$text",
+      style: TextStyle(
+          color: Color.fromRGBO(93, 93, 93, 1),
+          fontSize: 12,
+          fontFamily: 'Muli-Bold'),
     );
   }
 
   Widget _aboutText() {
     return Text(
       "About app",
-      style: TextStyle(color: Color.fromRGBO(0, 128, 255, 1), fontSize: 18),
+      style: TextStyle(
+          color: Color.fromRGBO(0, 128, 255, 1),
+          fontSize: 18,
+          fontFamily: 'Muli-Bold'),
     );
   }
 
   Widget _aboutSubText() {
     return Text(
       "View info about the app",
-      style: TextStyle(color: Color.fromRGBO(93, 93, 93, 1), fontSize: 12),
+      style: TextStyle(
+          color: Color.fromRGBO(93, 93, 93, 1),
+          fontSize: 12,
+          fontFamily: 'Muli-Bold'),
     );
   }
 
@@ -261,11 +316,19 @@ class _SettingState extends State<Setting> {
     );
   }
 
-  Widget _theme() {
+  Widget _theme(BuildContext context) {
+    ThemeChanger _themeChanger = Provider.of<ThemeChanger>(context);
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[_themeText(), _themeSubText()],
+        children: <Widget>[
+          _themeChanger.getTheme() == ThemeData.dark()
+              ? _themeText("Switch to Light Theme")
+              : _themeText("Switch to Dark Theme"),
+          _themeChanger.getTheme() == ThemeData.dark()
+              ? _themeSubText("Change app theme to light mode")
+              : _themeSubText("Change app theme to dark mode"),
+        ],
       ),
     );
   }
@@ -283,7 +346,12 @@ class _SettingState extends State<Setting> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int goal = prefs.getInt('goal');
     setState(() {
-      go = goal;
+      go = goal * 1000;
     });
+  }
+
+  _setSharedPref() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDark', isdark);
   }
 }

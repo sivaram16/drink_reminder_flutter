@@ -52,21 +52,30 @@ class _OnBoardState extends State<OnBoard> {
   Widget _startedText() {
     return Text(
       "Let's get started!",
-      style: TextStyle(fontSize: 24, color: Color.fromRGBO(0, 153, 255, 1)),
+      style: TextStyle(
+          fontSize: 24,
+          color: Color.fromRGBO(0, 153, 255, 1),
+          fontFamily: 'Muli-Bold'),
     );
   }
 
   Widget _selectText() {
     return Text(
       "Select your daily target",
-      style: TextStyle(fontSize: 18, color: Color.fromRGBO(0, 0, 0, 1)),
+      style: TextStyle(
+          fontSize: 18,
+          color: Color.fromRGBO(0, 0, 0, 1),
+          fontFamily: 'Muli-Bold'),
     );
   }
 
   Widget _selectLitre() {
     return Text(
       "$a litres",
-      style: TextStyle(fontSize: 80, color: Color.fromRGBO(126, 126, 126, 1)),
+      style: TextStyle(
+          fontSize: 80,
+          color: Color.fromRGBO(126, 126, 126, 1),
+          fontFamily: 'Muli-Bold'),
     );
   }
 
@@ -74,7 +83,10 @@ class _OnBoardState extends State<OnBoard> {
     int b = a * 1000 ~/ 200;
     return Text(
       "$b glasses per day",
-      style: TextStyle(fontSize: 18, color: Color.fromRGBO(0, 0, 0, 1)),
+      style: TextStyle(
+          fontSize: 18,
+          color: Color.fromRGBO(0, 0, 0, 1),
+          fontFamily: 'Muli-Bold'),
     );
   }
 

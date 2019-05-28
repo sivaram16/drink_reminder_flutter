@@ -6,7 +6,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'theme.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -15,13 +18,17 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int go = 0;
+  int delay;
+  var now = new DateTime.now();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   @override
   void initState() {
     super.initState();
     _getPref();
+    _getDate();
     print("ram" + go.toString());
+    print("delay" + delay.toString());
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     var android = new AndroidInitializationSettings('@mipmap/ic_launcher');
     var ios = new IOSInitializationSettings();
@@ -105,21 +112,30 @@ class _MainScreenState extends State<MainScreen> {
   Widget _todayProgressText() {
     return Text(
       "Today's progress",
-      style: TextStyle(color: Color.fromRGBO(0, 128, 255, 1), fontSize: 24),
+      style: TextStyle(
+          color: Color.fromRGBO(0, 128, 255, 1),
+          fontSize: 24,
+          fontFamily: 'Muli-Bold'),
     );
   }
 
   Widget _inTakeAmount() {
     return Text(
       "$count ml",
-      style: TextStyle(color: Color.fromRGBO(0, 0, 0, 1), fontSize: 48),
+      style: TextStyle(
+          color: Color.fromRGBO(0, 0, 0, 1),
+          fontSize: 48,
+          fontFamily: 'Muli-Bold'),
     );
   }
 
   Widget _overAllAmount() {
     return Text(
       "/ $go ml",
-      style: TextStyle(color: Color.fromRGBO(143, 143, 143, 1), fontSize: 18),
+      style: TextStyle(
+          color: Color.fromRGBO(143, 143, 143, 1),
+          fontSize: 18,
+          fontFamily: 'Muli-Bold'),
     );
   }
 
@@ -159,18 +175,22 @@ class _MainScreenState extends State<MainScreen> {
     return Text(
       text,
       textAlign: TextAlign.center,
-      style: TextStyle(color: Color.fromRGBO(0, 0, 0, 1), fontSize: 18),
+      style: TextStyle(
+          color: Color.fromRGBO(0, 0, 0, 1),
+          fontSize: 18,
+          fontFamily: 'Muli-Bold'),
     );
   }
 
   Widget _statusCount(String text) {
     return Text(
       text,
-      style: TextStyle(color: Color.fromRGBO(0, 0, 0, 1), fontSize: 48),
+      style: TextStyle(
+          color: Color.fromRGBO(0, 0, 0, 1),
+          fontSize: 48,
+          fontFamily: 'Muli-Bold'),
     );
   }
-
-
 
   _showNotification() async {
     var android = new AndroidNotificationDetails(
@@ -225,27 +245,37 @@ class _MainScreenState extends State<MainScreen> {
   Widget _oldRecord() {
     return Text(
       "17/05/2019 - 2300 ml / 2000ml",
-      style: TextStyle(fontSize: 14, color: Color.fromRGBO(0, 0, 0, 1)),
+      style: TextStyle(
+          fontSize: 14,
+          color: Color.fromRGBO(0, 0, 0, 1),
+          fontFamily: 'Muli-Bold'),
     );
   }
 
   Widget _statsText() {
     return Text(
       "Your stats",
-      style: TextStyle(color: Color.fromRGBO(152, 152, 152, 1), fontSize: 18),
+      style: TextStyle(
+          color: Color.fromRGBO(152, 152, 152, 1),
+          fontSize: 18,
+          fontFamily: 'Muli-Bold'),
     );
   }
 
   _getPref() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int goal = prefs.getInt('goal');
+    int delayF = prefs.getInt('delay');
+    print(delay);
     setState(() {
       go = goal * 1000;
+      delay = delayF;
     });
   }
 
-    Widget _bottomCard() {
-    return Container(
+  Widget _bottomCard() {
+    return Center(
+        child: Container(
       width: 330.0,
       height: 100.0,
       child: Card(
@@ -258,13 +288,13 @@ class _MainScreenState extends State<MainScreen> {
           children: <Widget>[_addingItems()],
         )),
       ),
-      decoration: new BoxDecoration(boxShadow: [
-        new BoxShadow(
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
           color: Color.fromRGBO(0, 0, 0, 0.16),
           blurRadius: 16.0,
         ),
       ]),
-    );
+    ));
   }
 
   Widget _addingItems() {
@@ -272,14 +302,14 @@ class _MainScreenState extends State<MainScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        _addEntryButton(100),
-        _addEntryButton(200),
-        _addEntryButton(1000)
+        _addEntryButton(100, "assets/images/onezerozero.svg"),
+        _addEntryButton(200, "assets/images/twozerozero.svg"),
+        _addEntryButton(1000, "assets/images/onezerozerozero.svg")
       ],
     );
   }
 
-  Widget _addEntryButton(int ml) {
+  Widget _addEntryButton(int ml, String svg) {
     return Container(
         height: 65,
         width: 65,
@@ -289,7 +319,7 @@ class _MainScreenState extends State<MainScreen> {
           fillColor: Colors.white,
           padding: EdgeInsets.all(15.0),
           onPressed: () {
-            Future.delayed(Duration(seconds: 5), () {
+            Future.delayed(Duration(seconds: delay), () {
               _showNotification();
             });
             setState(() {
@@ -300,14 +330,17 @@ class _MainScreenState extends State<MainScreen> {
           child: Column(
             children: <Widget>[
               SvgPicture.asset(
-                "assets/images/twozerozero.svg",
+                "$svg",
                 height: 21,
                 width: 20,
               ),
+              ect(2),
               Text(
                 "$ml ml",
-                style:
-                    TextStyle(color: Color.fromRGBO(0, 0, 0, 1), fontSize: 10),
+                style: TextStyle(
+                    color: Color.fromRGBO(0, 0, 0, 1),
+                    fontSize: 8,
+                    fontFamily: 'Muli-Bold'),
               )
             ],
           ),
@@ -332,5 +365,9 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ) ??
         false;
+  }
+
+  _getDate() {
+    return DateFormat("yyyy-MM-dd").format(now);
   }
 }
