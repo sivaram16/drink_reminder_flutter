@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'theme.dart';
 import 'package:provider/provider.dart';
+import 'water_day_record.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -18,9 +19,12 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int go = 0;
+  List<WaterDayRecord> recordList = List<WaterDayRecord>();
   int delay;
   var now = new DateTime.now();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  double percent = 0;
+  int count = 0;
 
   @override
   void initState() {
@@ -38,9 +42,6 @@ class _MainScreenState extends State<MainScreen> {
 
   ect(double top) => Container(margin: EdgeInsets.only(top: top));
   ecl(double left) => Container(margin: EdgeInsets.only(left: left));
-
-  double percent = 0;
-  int count = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -266,10 +267,23 @@ class _MainScreenState extends State<MainScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int goal = prefs.getInt('goal');
     int delayF = prefs.getInt('delay');
-    print(delay);
+    String recordData = prefs.getString('records');
+    if (recordData != null) {
+      recordList = parseRecordListFromString(recordData);
+    } else {
+      recordList.add(WaterDayRecord(now, 0));
+    }
+    print('goal: $goal');
+    print('record: $recordData');
     setState(() {
       go = goal * 1000;
       delay = delayF;
+      count = getTodayFromRecordList(recordList).intake;
+      if (count > go) {
+        percent = 1.0;
+      } else {
+        percent = count / go;
+      }
     });
   }
 
@@ -324,8 +338,15 @@ class _MainScreenState extends State<MainScreen> {
             });
             setState(() {
               count += ml;
-              percent = double.parse(percent.toStringAsPrecision(2)) + ml / go;
+              if (count > go) {
+                percent = 1.0;
+              } else {
+                percent = count / go;
+              }
+              recordList = updateTodayIntakeInRecordList(count, recordList);
+              print('${recordList.last.date} ${recordList.last.intake}');
             });
+            updateSharedPrefRecord(recordList);
           },
           child: Column(
             children: <Widget>[
@@ -369,5 +390,13 @@ class _MainScreenState extends State<MainScreen> {
 
   _getDate() {
     return DateFormat("yyyy-MM-dd").format(now);
+  }
+
+  void updateSharedPrefRecord(List<WaterDayRecord> recordList) async {
+    String recordAsString = convertRecordListToString(recordList);
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setString('records', recordAsString);
+    print("Updated record string in shared: $recordAsString");
+    pref.commit();
   }
 }
