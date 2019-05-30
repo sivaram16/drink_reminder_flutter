@@ -268,13 +268,16 @@ class _MainScreenState extends State<MainScreen> {
     int goal = prefs.getInt('goal');
     int delayF = prefs.getInt('delay');
     String recordData = prefs.getString('records');
-    if (recordData != null) {
-      recordList = parseRecordListFromString(recordData);
-    } else {
-      recordList.add(WaterDayRecord(now, 0));
-    }
+    setState(() {
+      if (recordData != null) {
+        recordList = parseRecordListFromString(recordData);
+      } else {
+        recordList.add(WaterDayRecord(DateTime.now(), 0));
+        updateSharedPrefRecord(recordList);
+      }
+    });
     print('goal: $goal');
-    print('record: $recordData');
+    print('record: $recordList');
     setState(() {
       go = goal * 1000;
       delay = delayF;
@@ -333,11 +336,12 @@ class _MainScreenState extends State<MainScreen> {
           fillColor: Colors.white,
           padding: EdgeInsets.all(15.0),
           onPressed: () {
-            Future.delayed(Duration(seconds: delay), () {
-              _showNotification();
-            });
+            // Future.delayed(Duration(seconds: delay), () {
+            //   _showNotification();
+            // });
             setState(() {
               count += ml;
+              print("Entered");
               if (count > go) {
                 percent = 1.0;
               } else {
