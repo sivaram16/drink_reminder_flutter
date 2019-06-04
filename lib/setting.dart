@@ -54,30 +54,24 @@ class _SettingState extends State<Setting> {
             onTap: () {
               Navigator.of(context).pushNamed('/onBoard');
             },
-            child: Row(
-              children: <Widget>[
-                ecl(30),
-                _changeLimit(),
-                Row(
-                  children: <Widget>[ecl(60), _rightArrowIcon()],
-                ),
-              ],
-            ),
+            child: Container(
+                padding: EdgeInsets.only(left: 30, right: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[_changeLimit(), _rightArrowIcon()],
+                )),
           ),
           ect(30),
           InkWell(
             onTap: () {
               Navigator.of(context).pushNamed('/change_notification');
             },
-            child: Row(
-              children: <Widget>[
-                ecl(30),
-                _changeNotification(),
-                Row(
-                  children: <Widget>[ecl(20), _rightArrowIcon()],
-                ),
-              ],
-            ),
+            child: Container(
+                padding: EdgeInsets.only(left: 30, right: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[_changeNotification(), _rightArrowIcon()],
+                )),
           ),
           ect(30),
           InkWell(
@@ -110,15 +104,12 @@ class _SettingState extends State<Setting> {
                 ),
               );
             },
-            child: Row(
-              children: <Widget>[
-                ecl(30),
-                _reset(),
-                Row(
-                  children: <Widget>[ecl(110), _rightArrowIcon()],
-                ),
-              ],
-            ),
+            child: Container(
+                padding: EdgeInsets.only(left: 30, right: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[_reset(), _rightArrowIcon()],
+                )),
           ),
           ect(30),
           InkWell(
@@ -129,28 +120,22 @@ class _SettingState extends State<Setting> {
                       ? ThemeData.light()
                       : ThemeData.dark());
             },
-            child: Row(
-              children: <Widget>[
-                ecl(30),
-                _theme(context),
-                Row(
-                  children: <Widget>[ecl(80), _rightArrowIcon()],
-                ),
-              ],
-            ),
+            child: Container(
+                padding: EdgeInsets.only(left: 30, right: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[_theme(context), _rightArrowIcon()],
+                )),
           ),
           ect(30),
           InkWell(
             onTap: () {},
-            child: Row(
-              children: <Widget>[
-                ecl(30),
-                _about(),
-                Row(
-                  children: <Widget>[ecl(130), _rightArrowIcon()],
-                ),
-              ],
-            ),
+            child: Container(
+                padding: EdgeInsets.only(left: 30, right: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[_about(), _rightArrowIcon()],
+                )),
           ),
         ],
       ),

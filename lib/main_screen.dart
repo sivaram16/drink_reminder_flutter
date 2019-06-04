@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'theme.dart';
 import 'package:provider/provider.dart';
 import 'water_day_record.dart';
+import 'dart:async';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -20,10 +21,15 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int go = 0;
   List<WaterDayRecord> recordList = List<WaterDayRecord>();
-  int delay;
+  int delay = 1;
+  double sofar = 0;
+  int streak = 0;
+  var recordSoup;
   var now = new DateTime.now();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   double percent = 0;
+  Timer _timer;
+
   int count = 0;
 
   @override
@@ -31,6 +37,12 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     _getPref();
     _getDate();
+    setState(() {
+      recordList.forEach((record) {
+        print("httt" + record.intake.toString());
+        sofar += (record.intake / 1000);
+      });
+    });
     print("ram" + go.toString());
     print("delay" + delay.toString());
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
@@ -38,6 +50,18 @@ class _MainScreenState extends State<MainScreen> {
     var ios = new IOSInitializationSettings();
     var initsetting = new InitializationSettings(android, ios);
     flutterLocalNotificationsPlugin.initialize(initsetting);
+  }
+
+  _delay() {
+    _timer = new Timer(Duration(seconds: delay), () {
+      _showNotification();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer.cancel();
   }
 
   ect(double top) => Container(margin: EdgeInsets.only(top: top));
@@ -84,15 +108,19 @@ class _MainScreenState extends State<MainScreen> {
             ],
           ),
           _progress(),
-          ect(10),
-          Row(children: <Widget>[
-            _statusWidget(_statusCount("0"), _statusText("day streak")),
-            _statusWidget(
-              _statusCount("4.5"),
-              _statusText("litres drank\nso far"),
-              color: Color.fromRGBO(0, 128, 255, 0.2),
-            )
-          ]),
+          ect(30),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _statusWidget(
+                    _statusCount("$streak"), _statusText("day streak")),
+                _statusWidget(
+                  _statusCount((sofar).toStringAsFixed(1)),
+                  _statusText("litres drank\nso far"),
+                  color: Color.fromRGBO(0, 128, 255, 0.2),
+                )
+              ]),
+          ect(30),
           _previousRecords()
         ],
       ),
@@ -153,11 +181,10 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _statusWidget(Widget count, Widget text, {color}) {
     return Container(
-      margin: EdgeInsets.only(left: 15),
+      margin: EdgeInsets.only(left: 10, right: 10),
       width: 140.0,
       height: 190.0,
       child: Card(
-        elevation: 8.0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Column(
           children: <Widget>[ect(20), count, ect(30), text],
@@ -206,11 +233,10 @@ class _MainScreenState extends State<MainScreen> {
     return Column(
       children: <Widget>[
         Container(
-          margin: EdgeInsets.fromLTRB(10, 10, 15, 30),
-          width: 330.0,
+          margin: EdgeInsets.fromLTRB(10, 10, 0, 30),
+          width: MediaQuery.of(context).size.width,
           height: 260.0,
           child: Card(
-            elevation: 8.0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -222,12 +248,17 @@ class _MainScreenState extends State<MainScreen> {
                     ect(20),
                     _statsText(),
                     ect(30),
-                    ListView.separated(
+                    ListView.builder(
                       padding: EdgeInsets.only(left: 20),
                       shrinkWrap: true,
-                      itemCount: 5,
-                      separatorBuilder: (context, i) => ect(10),
-                      itemBuilder: (context, index) => _oldRecord(),
+                      itemCount: recordSoup?.length ?? 0,
+                      itemBuilder: (context, index) => Text(
+                            '${recordSoup[index]?.split(' ') ?? ''}',
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Color.fromRGBO(0, 0, 0, 1),
+                                fontFamily: 'Muli-Bold'),
+                          ),
                     )
                   ],
                 )),
@@ -240,16 +271,6 @@ class _MainScreenState extends State<MainScreen> {
           ]),
         ),
       ],
-    );
-  }
-
-  Widget _oldRecord() {
-    return Text(
-      "17/05/2019 - 2300 ml / 2000ml",
-      style: TextStyle(
-          fontSize: 14,
-          color: Color.fromRGBO(0, 0, 0, 1),
-          fontFamily: 'Muli-Bold'),
     );
   }
 
@@ -268,9 +289,22 @@ class _MainScreenState extends State<MainScreen> {
     int goal = prefs.getInt('goal');
     int delayF = prefs.getInt('delay');
     String recordData = prefs.getString('records');
+    int s = prefs.getInt('streak');
     setState(() {
       if (recordData != null) {
         recordList = parseRecordListFromString(recordData);
+        recordSoup = recordData.split('\n');
+        recordSoup.removeLast();
+        print('Record soup: $recordSoup');
+        recordSoup.forEach((record) {
+          print('HAHA: ${record.split(' ')[1]}');
+          setState(() {
+            recordList.forEach((record) {
+              print("httt" + record.intake.toString());
+              sofar += (record.intake / 1000);
+            });
+          });
+        });
       } else {
         recordList.add(WaterDayRecord(DateTime.now(), 0));
         updateSharedPrefRecord(recordList);
@@ -279,13 +313,16 @@ class _MainScreenState extends State<MainScreen> {
     print('goal: $goal');
     print('record: $recordList');
     setState(() {
+      streak = s;
       go = goal * 1000;
       delay = delayF;
       count = getTodayFromRecordList(recordList).intake;
       if (count > go) {
         percent = 1.0;
+        streak = 1;
       } else {
         percent = count / go;
+        streak = 0;
       }
     });
   }
@@ -336,21 +373,23 @@ class _MainScreenState extends State<MainScreen> {
           fillColor: Colors.white,
           padding: EdgeInsets.all(15.0),
           onPressed: () {
-            // Future.delayed(Duration(seconds: delay), () {
-            //   _showNotification();
-            // });
             setState(() {
               count += ml;
               print("Entered");
               if (count > go) {
                 percent = 1.0;
+                setState(() {
+                  streak = 1;
+                });
               } else {
                 percent = count / go;
               }
               recordList = updateTodayIntakeInRecordList(count, recordList);
               print('${recordList.last.date} ${recordList.last.intake}');
+              updateSharedPrefRecord(recordList);
             });
-            updateSharedPrefRecord(recordList);
+            _delay();
+            Navigator.of(context).pushNamed('/mainscreen');
           },
           child: Column(
             children: <Widget>[
@@ -399,8 +438,39 @@ class _MainScreenState extends State<MainScreen> {
   void updateSharedPrefRecord(List<WaterDayRecord> recordList) async {
     String recordAsString = convertRecordListToString(recordList);
     SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setInt('streak', streak);
     pref.setString('records', recordAsString);
     print("Updated record string in shared: $recordAsString");
     pref.commit();
+  }
+
+  _notify() {
+    Future.delayed(Duration(seconds: delay), () {
+      _showNotification();
+    });
+  }
+
+  _scheduleNotify() async {
+    print("object");
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    var android = new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var ios = new IOSInitializationSettings();
+    var initsetting = new InitializationSettings(android, ios);
+    flutterLocalNotificationsPlugin.initialize(initsetting);
+    var scheduledNotificationDateTime =
+        new DateTime.now().add(new Duration(seconds: 5));
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+        'your other channel id',
+        'your other channel name',
+        'your other channel description');
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+    NotificationDetails platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.schedule(
+        0,
+        'scheduled title',
+        'scheduled body',
+        scheduledNotificationDateTime,
+        platformChannelSpecifics);
   }
 }

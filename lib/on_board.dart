@@ -24,7 +24,7 @@ class _OnBoardState extends State<OnBoard> {
       height: MediaQuery.of(context).size.height,
       child: SingleChildScrollView(
           child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           ect(70),
           Row(children: <Widget>[ecl(30), _startedText()]),
@@ -34,15 +34,16 @@ class _OnBoardState extends State<OnBoard> {
           Center(child: _selectLitre()),
           Center(child: _glassText()),
           ect(30),
-          Row(
-            children: <Widget>[
-              ecl(80),
-              _minusButton(),
-              ecl(30),
-              _addButton(),
-            ],
-          ),
-          ect(140),
+          Container(
+              padding: EdgeInsets.only(left: 80, right: 80),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  _minusButton(),
+                  _addButton(),
+                ],
+              )),
+          ect(150),
           Center(child: _doneButton())
         ],
       )),
@@ -130,7 +131,7 @@ class _OnBoardState extends State<OnBoard> {
     return RawMaterialButton(
       onPressed: () async {
         await _setSharedPref();
-        Navigator.of(context).pushNamed('/mainscreen');
+        Navigator.of(context).pushNamed('/change_notification');
       },
       child: Icon(
         Icons.check,

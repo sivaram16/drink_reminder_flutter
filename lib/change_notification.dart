@@ -20,31 +20,35 @@ class _ChangeState extends State<Change> {
   }
 
   Widget _layout() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        ect(250),
-        Center(child: _glassText()),
-        ect(30),
-        Row(
+    return Container(
+        padding: EdgeInsets.only(bottom: 30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            ecl(80),
-            _minusButton(),
-            ecl(30),
-            _addButton(),
+            ect(150),
+            Center(child: _glassText()),
+            Container(
+                padding: EdgeInsets.only(left: 80, right: 80),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    _minusButton(),
+                    _addButton(),
+                  ],
+                )),
+            ect(100),
+            Center(child: _doneButton())
           ],
-        ),
-        ect(140),
-        Center(child: _doneButton())
-      ],
-    );
+        ));
   }
 
   Widget _glassText() {
     // int b = a * 1000 ~/ 200;
     return Text(
       "$delay seconds",
-      style: TextStyle(fontSize: 18, color: Color.fromRGBO(0, 0, 0, 1),
+      style: TextStyle(
+          fontSize: 18,
+          color: Color.fromRGBO(0, 0, 0, 1),
           fontFamily: 'Muli-Bold'),
     );
   }
@@ -107,4 +111,6 @@ class _ChangeState extends State<Change> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('delay', delay);
   }
+
+
 }
