@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui' as prefix0;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -79,12 +80,24 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _layout() {
-    return Container(
-      padding: EdgeInsets.only(left: 15, right: 15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[_full(), _bottomCard()],
-      ),
+    return Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.only(left: 15, right: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[_full()],
+          ),
+        ),
+        Column(
+          children: <Widget>[
+            Spacer(),
+            Container(
+                margin: EdgeInsets.only(bottom: 16), child: _bottomCard()),
+          ],
+        )
+      ],
     );
   }
 
@@ -121,7 +134,19 @@ class _MainScreenState extends State<MainScreen> {
                 )
               ]),
           ect(30),
-          _previousRecords()
+          _previousRecords(),
+          FlutterLogo(
+            colors: Colors.teal,
+            size: 300,
+          ),
+          FlutterLogo(
+            colors: Colors.red,
+            size: 300,
+          ),
+          FlutterLogo(
+            colors: Colors.yellow,
+            size: 300,
+          ) //TODO: Just to show off blur, remove these
         ],
       ),
     );
@@ -248,18 +273,7 @@ class _MainScreenState extends State<MainScreen> {
                     ect(20),
                     _statsText(),
                     ect(30),
-                    ListView.builder(
-                      padding: EdgeInsets.only(left: 20),
-                      shrinkWrap: true,
-                      itemCount: recordSoup?.length ?? 0,
-                      itemBuilder: (context, index) => Text(
-                            '${recordSoup[index]?.split(' ') ?? ''}',
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: Color.fromRGBO(0, 0, 0, 1),
-                                fontFamily: 'Muli-Bold'),
-                          ),
-                    )
+                    ...handleStats()
                   ],
                 )),
           ),
@@ -325,29 +339,26 @@ class _MainScreenState extends State<MainScreen> {
         streak = 0;
       }
     });
+    handleStreak();
   }
 
   Widget _bottomCard() {
     return Center(
+        child: ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      clipBehavior: Clip.antiAlias,
+      child: BackdropFilter(
+        filter: prefix0.ImageFilter.blur(sigmaX: 12, sigmaY: 12),
         child: Container(
-      width: 330.0,
-      height: 100.0,
-      child: Card(
-        color: Color.fromRGBO(10, 128, 255, 1),
-        elevation: 8.0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        child: Container(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[_addingItems()],
-        )),
-      ),
-      decoration: BoxDecoration(boxShadow: [
-        BoxShadow(
-          color: Color.fromRGBO(0, 0, 0, 0.16),
-          blurRadius: 16.0,
+          decoration: BoxDecoration(color: Color.fromRGBO(0, 128, 255, 0.4)),
+          width: 330.0,
+          height: 100.0,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[_addingItems()],
+          ),
         ),
-      ]),
+      ),
     ));
   }
 
@@ -472,5 +483,34 @@ class _MainScreenState extends State<MainScreen> {
         'scheduled body',
         scheduledNotificationDateTime,
         platformChannelSpecifics);
+  }
+
+  void handleStreak() {
+    streak = 0;
+    recordList.forEach((record) {
+      print("Evaluating record: Date: ${record.date} Intake: ${record.date}");
+      setState(() {
+        if (record.intake >= go) {
+          streak += 1;
+        } else {
+          streak = 0;
+        }
+      });
+    });
+  }
+
+  List<Widget> handleStats() {
+    List<Widget> itemsToDisplay = [];
+    recordList.forEach((record) {
+      String dateText, intakeText;
+      itemsToDisplay.add(Row(
+        children: <Widget>[
+          Text('${record.date.day}/${record.date.month}/${record.date.year} '),
+          Spacer(),
+          Text('${record.intake / 1000} litres')
+        ],
+      ));
+    });
+    return itemsToDisplay;
   }
 }

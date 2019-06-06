@@ -47,7 +47,8 @@ WaterDayRecord getTodayFromRecordList(List<WaterDayRecord> recordList) {
       lastRecord.date.day == today.day) {
     return lastRecord;
   }
-  return null;
+  recordList.add(WaterDayRecord(DateTime.now(), 0));
+  return recordList.last;
 }
 
 /// Updates today's record intake value and returns the updated record list.
