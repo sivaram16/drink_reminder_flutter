@@ -38,12 +38,6 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     _getPref();
     _getDate();
-    setState(() {
-      recordList.forEach((record) {
-        print("httt" + record.intake.toString());
-        sofar += (record.intake / 1000);
-      });
-    });
     print("ram" + go.toString());
     print("delay" + delay.toString());
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
@@ -135,18 +129,6 @@ class _MainScreenState extends State<MainScreen> {
               ]),
           ect(30),
           _previousRecords(),
-          FlutterLogo(
-            colors: Colors.teal,
-            size: 300,
-          ),
-          FlutterLogo(
-            colors: Colors.red,
-            size: 300,
-          ),
-          FlutterLogo(
-            colors: Colors.yellow,
-            size: 300,
-          ) //TODO: Just to show off blur, remove these
         ],
       ),
     );
@@ -266,7 +248,7 @@ class _MainScreenState extends State<MainScreen> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Container(
-                padding: EdgeInsets.only(left: 16),
+                padding: EdgeInsets.only(left: 16, right: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -312,11 +294,9 @@ class _MainScreenState extends State<MainScreen> {
         print('Record soup: $recordSoup');
         recordSoup.forEach((record) {
           print('HAHA: ${record.split(' ')[1]}');
-          setState(() {
-            recordList.forEach((record) {
-              print("httt" + record.intake.toString());
-              sofar += (record.intake / 1000);
-            });
+          recordList.forEach((record) {
+            print("httt" + record.intake.toString());
+            sofar += (record.intake / 1000);
           });
         });
       } else {
