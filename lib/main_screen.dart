@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as prefix0;
 
@@ -6,13 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:intl/intl.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'theme.dart';
-import 'package:provider/provider.dart';
+
 import 'water_day_record.dart';
-import 'dart:async';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -291,13 +290,9 @@ class _MainScreenState extends State<MainScreen> {
         recordList = parseRecordListFromString(recordData);
         recordSoup = recordData.split('\n');
         recordSoup.removeLast();
-        print('Record soup: $recordSoup');
-        recordSoup.forEach((record) {
-          print('HAHA: ${record.split(' ')[1]}');
-          recordList.forEach((record) {
-            print("httt" + record.intake.toString());
-            sofar += (record.intake / 1000);
-          });
+        recordList.forEach((_record) {
+          print("httt" + _record.intake.toString());
+          sofar += (_record.intake / 1000);
         });
       } else {
         recordList.add(WaterDayRecord(DateTime.now(), 0));
