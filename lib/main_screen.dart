@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as prefix0;
 
+import 'package:drink_remainder/setting.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'route.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,14 +20,17 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen>
+    with SingleTickerProviderStateMixin {
   int go = 0;
   List<WaterDayRecord> recordList = List<WaterDayRecord>();
   int delay = 1;
+  AnimationController animationController;
+
   double sofar = 0;
   int streak = 0;
   var recordSoup;
-  var now = new DateTime.now();
+  var now = DateTime.now();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   double percent = 0;
   Timer _timer;
@@ -39,15 +44,19 @@ class _MainScreenState extends State<MainScreen> {
     _getDate();
     print("ram" + go.toString());
     print("delay" + delay.toString());
-    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-    var android = new AndroidInitializationSettings('@mipmap/ic_launcher');
-    var ios = new IOSInitializationSettings();
-    var initsetting = new InitializationSettings(android, ios);
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    var android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var ios = IOSInitializationSettings();
+    var initsetting = InitializationSettings(android, ios);
     flutterLocalNotificationsPlugin.initialize(initsetting);
+    animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 4),
+    );
   }
 
   _delay() {
-    _timer = new Timer(Duration(seconds: delay), () {
+    _timer = Timer(Duration(seconds: delay), () {
       _showNotification();
     });
   }
@@ -55,6 +64,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void dispose() {
     super.dispose();
+    animationController.dispose();
     _timer.cancel();
   }
 
@@ -77,7 +87,7 @@ class _MainScreenState extends State<MainScreen> {
       alignment: Alignment.center,
       children: <Widget>[
         Container(
-          padding: EdgeInsets.only(left: 15, right: 15),
+          padding: EdgeInsets.only(left: 10, right: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[_full()],
@@ -135,13 +145,21 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _setting() {
     return Container(
-      child: InkWell(
-        child: Icon(Icons.settings),
-        onTap: () {
-          Navigator.of(context).pushNamed('/setting');
-        },
-      ),
-    );
+        child: AnimatedBuilder(
+            animation: animationController,
+            child: InkWell(
+              child: Icon(Icons.settings),
+              onTap: () {
+                animationController.forward();
+                Navigator.push(context, FadeRoute(page: Setting()));
+              },
+            ),
+            builder: (BuildContext context, Widget _widget) {
+              return Transform.rotate(
+                angle: animationController.value * 6.3,
+                child: _widget,
+              );
+            }));
   }
 
   Widget _todayProgressText() {
@@ -178,8 +196,6 @@ class _MainScreenState extends State<MainScreen> {
     return LinearPercentIndicator(
       lineHeight: 25.0,
       backgroundColor: Color.fromRGBO(223, 223, 223, 0.45),
-      animation: true,
-      animationDuration: 500,
       progressColor: Colors.blueAccent,
       percent: percent,
     );
@@ -196,8 +212,8 @@ class _MainScreenState extends State<MainScreen> {
           children: <Widget>[ect(20), count, ect(30), text],
         ),
       ),
-      decoration: new BoxDecoration(boxShadow: [
-        new BoxShadow(
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
           color: color ?? Color.fromRGBO(255, 159, 159, 0.51),
           blurRadius: 16.0,
         ),
@@ -227,10 +243,10 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _showNotification() async {
-    var android = new AndroidNotificationDetails(
+    var android = AndroidNotificationDetails(
         "channelId", "channelName", "channelDescription");
-    var ios = new IOSNotificationDetails();
-    var platform = new NotificationDetails(android, ios);
+    var ios = IOSNotificationDetails();
+    var platform = NotificationDetails(android, ios);
     await flutterLocalNotificationsPlugin.show(
         0, "It's time to drink", "Be Hydrate", platform);
   }
@@ -239,7 +255,7 @@ class _MainScreenState extends State<MainScreen> {
     return Column(
       children: <Widget>[
         Container(
-          margin: EdgeInsets.fromLTRB(10, 10, 0, 30),
+          margin: EdgeInsets.fromLTRB(0, 10, 0, 30),
           width: MediaQuery.of(context).size.width,
           height: 260.0,
           child: Card(
@@ -293,6 +309,7 @@ class _MainScreenState extends State<MainScreen> {
         recordList.forEach((_record) {
           print("httt" + _record.intake.toString());
           sofar += (_record.intake / 1000);
+          print(sofar.toString());
         });
       } else {
         recordList.add(WaterDayRecord(DateTime.now(), 0));
@@ -360,6 +377,7 @@ class _MainScreenState extends State<MainScreen> {
           padding: EdgeInsets.all(15.0),
           onPressed: () {
             setState(() {
+              sofar += ml / 1000;
               count += ml;
               print("Entered");
               if (count > go) {
@@ -375,7 +393,6 @@ class _MainScreenState extends State<MainScreen> {
               updateSharedPrefRecord(recordList);
             });
             _delay();
-            Navigator.of(context).pushNamed('/mainscreen');
           },
           child: Column(
             children: <Widget>[
@@ -438,19 +455,19 @@ class _MainScreenState extends State<MainScreen> {
 
   _scheduleNotify() async {
     print("object");
-    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-    var android = new AndroidInitializationSettings('@mipmap/ic_launcher');
-    var ios = new IOSInitializationSettings();
-    var initsetting = new InitializationSettings(android, ios);
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    var android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var ios = IOSInitializationSettings();
+    var initsetting = InitializationSettings(android, ios);
     flutterLocalNotificationsPlugin.initialize(initsetting);
     var scheduledNotificationDateTime =
-        new DateTime.now().add(new Duration(seconds: 5));
-    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+        DateTime.now().add(Duration(seconds: 5));
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'your other channel id',
         'your other channel name',
         'your other channel description');
-    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-    NotificationDetails platformChannelSpecifics = new NotificationDetails(
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    NotificationDetails platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.schedule(
         0,
@@ -476,16 +493,34 @@ class _MainScreenState extends State<MainScreen> {
 
   List<Widget> handleStats() {
     List<Widget> itemsToDisplay = [];
+
     recordList.forEach((record) {
       String dateText, intakeText;
       itemsToDisplay.add(Row(
         children: <Widget>[
-          Text('${record.date.day}/${record.date.month}/${record.date.year} '),
+          Text(
+            '${record.date.day <= 9 ? '0' + record.date.day.toString() : record.date.day}/${record.date.month <= 9 ? '0' + record.date.month.toString() : record.date.month}/${record.date.year} ',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+              letterSpacing: 3.0,
+              fontFamily: 'Muli-Bold',
+            ),
+          ),
           Spacer(),
-          Text('${record.intake / 1000} litres')
+          Text(
+            '${record.intake / 1000} litres',
+            style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'Muli-Bold',
+              fontSize: 16,
+              letterSpacing: 3.0,
+            ),
+          )
         ],
       ));
     });
-    return itemsToDisplay;
+    print("before reverese" + itemsToDisplay.toString());
+    return itemsToDisplay.reversed.toList();
   }
 }

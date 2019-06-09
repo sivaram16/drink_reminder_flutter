@@ -1,7 +1,8 @@
+import 'package:drink_remainder/main_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
+import 'route.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Change extends StatefulWidget {
@@ -93,7 +94,7 @@ class _ChangeState extends State<Change> {
     return RawMaterialButton(
       onPressed: () async {
         await _setSharedPref();
-        Navigator.of(context).pushNamed('/mainscreen');
+        Navigator.push(context, FadeRoute(page: MainScreen()));
       },
       child: Icon(
         Icons.check,
@@ -111,6 +112,4 @@ class _ChangeState extends State<Change> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('delay', delay);
   }
-
-
 }

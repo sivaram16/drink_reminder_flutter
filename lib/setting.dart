@@ -1,8 +1,12 @@
+import 'package:drink_remainder/about_app.dart';
+import 'package:drink_remainder/change_notification.dart';
+import 'package:drink_remainder/on_board.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'theme.dart';
 import 'package:provider/provider.dart';
+import 'route.dart';
 
 class Setting extends StatefulWidget {
   @override
@@ -52,7 +56,7 @@ class _SettingState extends State<Setting> {
           ect(20),
           InkWell(
             onTap: () {
-              Navigator.of(context).pushNamed('/onBoard');
+              Navigator.push(context, FadeRoute(page: OnBoard()));
             },
             child: Container(
                 padding: EdgeInsets.only(left: 30, right: 30),
@@ -64,7 +68,7 @@ class _SettingState extends State<Setting> {
           ect(30),
           InkWell(
             onTap: () {
-              Navigator.of(context).pushNamed('/change_notification');
+              Navigator.push(context, FadeRoute(page: Change()));
             },
             child: Container(
                 padding: EdgeInsets.only(left: 30, right: 30),
@@ -93,7 +97,7 @@ class _SettingState extends State<Setting> {
                     ),
                     FlatButton(
                       onPressed: () {
-                        Navigator.of(context).pushNamed("/onBoard");
+                        _clearData();
                       },
                       child: Text(
                         'Yes',
@@ -129,7 +133,9 @@ class _SettingState extends State<Setting> {
           ),
           ect(30),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, FadeRoute(page: About()));
+            },
             child: Container(
                 padding: EdgeInsets.only(left: 30, right: 30),
                 child: Row(
@@ -338,5 +344,11 @@ class _SettingState extends State<Setting> {
   _setSharedPref() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isDark', isdark);
+  }
+
+  _clearData() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.clear();
+    Navigator.push(context, FadeRoute(page: OnBoard()));
   }
 }

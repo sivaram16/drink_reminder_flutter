@@ -1,5 +1,8 @@
+import 'package:drink_remainder/main_screen.dart';
+import 'package:drink_remainder/on_board.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'route.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -35,10 +38,10 @@ class _SplashscreenState extends State<Splashscreen> {
     int goal = prefs.getInt('goal');
     goal == null
         ? Future.delayed(Duration(seconds: 1), () {
-            Navigator.of(context).pushNamed('/onBoard');
+            Navigator.push(context, FadeRoute(page: OnBoard()));
           })
         : Future.delayed(Duration(seconds: 1), () {
-            Navigator.of(context).pushNamed('/mainscreen');
+            Navigator.push(context, FadeRoute(page: MainScreen()));
           });
   }
 }

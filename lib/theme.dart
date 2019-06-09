@@ -8,8 +8,6 @@ class ThemeChanger with ChangeNotifier {
   getTheme() => _themeData;
   setTheme(ThemeData theme) {
     _themeData = theme;
-    
-
     notifyListeners();
   }
 }

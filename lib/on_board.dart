@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'change_notification.dart';
+import 'route.dart';
 
 class OnBoard extends StatefulWidget {
   @override
@@ -131,7 +133,7 @@ class _OnBoardState extends State<OnBoard> {
     return RawMaterialButton(
       onPressed: () async {
         await _setSharedPref();
-        Navigator.of(context).pushNamed('/change_notification');
+        Navigator.push(context, FadeRoute(page: Change()));
       },
       child: Icon(
         Icons.check,
