@@ -403,7 +403,7 @@ class _MainScreenState extends State<MainScreen>
     var initsetting = InitializationSettings(android, ios);
     flutterLocalNotificationsPlugin.initialize(initsetting);
     var scheduledNotificationDateTime =
-        DateTime.now().add(Duration(seconds: delay));
+        DateTime.now().add(Duration(hours: delay));
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'your other channel id',
         'your other channel name',

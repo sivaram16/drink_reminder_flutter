@@ -12,9 +12,15 @@ class Change extends StatefulWidget {
 
 ect(double top) => Container(margin: EdgeInsets.only(top: top));
 ecl(double left) => Container(margin: EdgeInsets.only(left: left));
-int delay = 0;
+int delay = 0, after;
 
 class _ChangeState extends State<Change> {
+  @override
+  void initState() {
+    super.initState();
+    _getPref();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,9 +59,7 @@ class _ChangeState extends State<Change> {
   Widget _glassText() {
     return Text(
       "You will get notify every $delay Hour after your intake.",
-      style: TextStyle(
-          fontSize: 14,
-          fontFamily: 'Muli-Bold'),
+      style: TextStyle(fontSize: 14, fontFamily: 'Muli-Bold'),
     );
   }
 
@@ -125,5 +129,11 @@ class _ChangeState extends State<Change> {
       style:
           TextStyle(fontSize: 28, color: Colors.blue, fontFamily: 'Muli-Bold'),
     ));
+  }
+
+  _getPref() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int delayF = prefs.getInt('delay');
+    delayF = delayF;
   }
 }
