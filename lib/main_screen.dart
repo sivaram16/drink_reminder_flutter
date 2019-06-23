@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as prefix0;
-
 import 'package:drink_remainder/setting.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +8,8 @@ import 'route.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'water_day_record.dart';
 
 class MainScreen extends StatefulWidget {
@@ -25,12 +22,10 @@ class _MainScreenState extends State<MainScreen>
   int go = 0;
   List<WaterDayRecord> recordList = List<WaterDayRecord>();
   int delay = 1;
-  AnimationController animationController;
 
   double sofar = 0;
   int streak = 0;
   var recordSoup;
-  var now = DateTime.now();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   double percent = 0;
   Timer _timer;
@@ -41,30 +36,11 @@ class _MainScreenState extends State<MainScreen>
   void initState() {
     super.initState();
     _getPref();
-    _getDate();
-    print("ram" + go.toString());
-    print("delay" + delay.toString());
-    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    var android = AndroidInitializationSettings('@mipmap/ic_launcher');
-    var ios = IOSInitializationSettings();
-    var initsetting = InitializationSettings(android, ios);
-    flutterLocalNotificationsPlugin.initialize(initsetting);
-    animationController = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 4),
-    );
-  }
-
-  _delay() {
-    _timer = Timer(Duration(seconds: delay), () {
-      _showNotification();
-    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    animationController.dispose();
     _timer.cancel();
   }
 
@@ -145,20 +121,10 @@ class _MainScreenState extends State<MainScreen>
 
   Widget _setting() {
     return Container(
-        child: AnimatedBuilder(
-            animation: animationController,
-            child: InkWell(
-              child: Icon(Icons.settings),
-              onTap: () {
-                animationController.forward();
-                Navigator.push(context, FadeRoute(page: Setting()));
-              },
-            ),
-            builder: (BuildContext context, Widget _widget) {
-              return Transform.rotate(
-                angle: animationController.value * 6.3,
-                child: _widget,
-              );
+        child: InkWell(
+            child: Icon(Icons.settings),
+            onTap: () {
+              Navigator.push(context, FadeRoute(page: Setting()));
             }));
   }
 
@@ -242,15 +208,6 @@ class _MainScreenState extends State<MainScreen>
     );
   }
 
-  _showNotification() async {
-    var android = AndroidNotificationDetails(
-        "channelId", "channelName", "channelDescription");
-    var ios = IOSNotificationDetails();
-    var platform = NotificationDetails(android, ios);
-    await flutterLocalNotificationsPlugin.show(
-        0, "It's time to drink", "Be Hydrate", platform);
-  }
-
   Widget _previousRecords() {
     return Column(
       children: <Widget>[
@@ -307,17 +264,13 @@ class _MainScreenState extends State<MainScreen>
         recordSoup = recordData.split('\n');
         recordSoup.removeLast();
         recordList.forEach((_record) {
-          print("httt" + _record.intake.toString());
           sofar += (_record.intake / 1000);
-          print(sofar.toString());
         });
       } else {
         recordList.add(WaterDayRecord(DateTime.now(), 0));
         updateSharedPrefRecord(recordList);
       }
     });
-    print('goal: $goal');
-    print('record: $recordList');
     setState(() {
       streak = s;
       go = goal * 1000;
@@ -392,7 +345,8 @@ class _MainScreenState extends State<MainScreen>
               print('${recordList.last.date} ${recordList.last.intake}');
               updateSharedPrefRecord(recordList);
             });
-            _delay();
+            print(delay);
+            _scheduleNotify();
           },
           child: Column(
             children: <Widget>[
@@ -434,10 +388,6 @@ class _MainScreenState extends State<MainScreen>
         false;
   }
 
-  _getDate() {
-    return DateFormat("yyyy-MM-dd").format(now);
-  }
-
   void updateSharedPrefRecord(List<WaterDayRecord> recordList) async {
     String recordAsString = convertRecordListToString(recordList);
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -447,21 +397,14 @@ class _MainScreenState extends State<MainScreen>
     pref.commit();
   }
 
-  _notify() {
-    Future.delayed(Duration(seconds: delay), () {
-      _showNotification();
-    });
-  }
-
   _scheduleNotify() async {
-    print("object");
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     var android = AndroidInitializationSettings('@mipmap/ic_launcher');
     var ios = IOSInitializationSettings();
     var initsetting = InitializationSettings(android, ios);
     flutterLocalNotificationsPlugin.initialize(initsetting);
     var scheduledNotificationDateTime =
-        DateTime.now().add(Duration(seconds: 5));
+        DateTime.now().add(Duration(seconds: delay));
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'your other channel id',
         'your other channel name',
@@ -469,12 +412,8 @@ class _MainScreenState extends State<MainScreen>
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     NotificationDetails platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.schedule(
-        0,
-        'scheduled title',
-        'scheduled body',
-        scheduledNotificationDateTime,
-        platformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.schedule(0, "It's time to drink",
+        "Be Hydrate", scheduledNotificationDateTime, platformChannelSpecifics);
   }
 
   void handleStreak() {
@@ -495,7 +434,6 @@ class _MainScreenState extends State<MainScreen>
     List<Widget> itemsToDisplay = [];
 
     recordList.forEach((record) {
-      String dateText, intakeText;
       itemsToDisplay.add(Row(
         children: <Widget>[
           Text(
@@ -520,7 +458,6 @@ class _MainScreenState extends State<MainScreen>
         ],
       ));
     });
-    print("before reverese" + itemsToDisplay.toString());
     return itemsToDisplay.reversed.toList();
   }
 }
