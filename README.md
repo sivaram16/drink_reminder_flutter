@@ -10,7 +10,7 @@ A cross platform mobile application to help you hydrate.
 
 ## Release
 
-> Download the [drink_remainder.apk](https://drive.google.com/open?id=1FDFxegr2W8v9EvL3-Jgso2JDfcwPddBU) for android
+> Download the [drink_remainder.apk](https://drive.google.com/open?id=1qZ9jI_xqHRZCzqVWSs90grEAJIz7RunG) for android
 
 ## Screenshots
 
