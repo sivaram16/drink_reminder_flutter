@@ -10,7 +10,7 @@ A cross platform mobile application to help you hydrate.
 
 ## Release
 
-> Download the [drink_remainder.apk](https://drive.google.com/open?id=1oYXpTTe4RNVoooVkLKDZRGAVNxHhRVaU) for android
+> Download the [drink_remainder.apk](https://drive.google.com/open?id=1FDFxegr2W8v9EvL3-Jgso2JDfcwPddBU) for android
 
 ## Screenshots
 
@@ -39,8 +39,6 @@ A cross platform mobile application to help you hydrate.
 - [Shared Preferences](https://pub.dev/packages/shared_preferences)
 
 ## How to run
-
-First go and setup the [server](http://github.com/vineeshvk/chat-app-server) for the chat app
 ```
 flutter packages get
 ```
