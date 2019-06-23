@@ -1,4 +1,4 @@
-# water_drink_remaindet
+# Water Drink Reminder App
 
 A cross platform mobile application to help you hydrate.
 
@@ -26,11 +26,11 @@ A cross platform mobile application to help you hydrate.
 ![](github_assets/two.png)
 
 ## Features
-- set a intake goal
-- can also give intake amount(100ml,200ml,1000ml)
-- notification(only for android)
-- dark mode
-- can see a old stats
+- **Set intake goal**
+- **Update your intake (100ml, 200ml, 1L) after you drink water.**
+- **Notification to drink water (only on Android)**
+- **Easy to use UI, with DARK mode.**
+- **View your previous stats.**
 
 ## Tools used
 - [Flutter & Dart](http://flutter.dev)
