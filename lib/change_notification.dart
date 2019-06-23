@@ -51,7 +51,7 @@ class _ChangeState extends State<Change> {
                   ],
                 )),
             ect(100),
-            Center(child: _doneButton())
+            Center(child: delay == 0 ? Container(height: 65) : _doneButton())
           ],
         ));
   }

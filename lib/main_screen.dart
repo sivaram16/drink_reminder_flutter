@@ -161,12 +161,14 @@ class _MainScreenState extends State<MainScreen>
   }
 
   Widget _progress() {
-    return LinearPercentIndicator(
-      lineHeight: 25.0,
-      backgroundColor: Color.fromRGBO(223, 223, 223, 0.45),
-      progressColor: Colors.blueAccent,
-      percent: percent,
-    );
+    return Padding(
+        padding: EdgeInsets.all(5),
+        child: LinearPercentIndicator(
+          lineHeight: 25.0,
+          backgroundColor: Color.fromRGBO(223, 223, 223, 0.45),
+          progressColor: Colors.blueAccent,
+          percent: percent,
+        ));
   }
 
   Widget _statusWidget(Widget count, Widget text, {color}) {

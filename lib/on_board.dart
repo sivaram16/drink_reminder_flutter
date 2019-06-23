@@ -49,7 +49,7 @@ class _OnBoardState extends State<OnBoard> {
                 ],
               )),
           ect(150),
-          Center(child: _doneButton())
+          Center(child: a == 0 ? Container() : _doneButton())
         ],
       )),
     );
