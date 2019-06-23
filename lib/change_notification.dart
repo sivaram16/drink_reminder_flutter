@@ -17,7 +17,11 @@ int delay = 0;
 class _ChangeState extends State<Change> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _layout());
+    return Scaffold(
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Colors.white,
+        body: _layout());
   }
 
   Widget _layout() {
@@ -27,6 +31,9 @@ class _ChangeState extends State<Change> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             ect(150),
+            Center(
+              child: _notifyText(),
+            ),
             Center(child: _glassText()),
             Container(
                 padding: EdgeInsets.only(left: 80, right: 80),
@@ -44,12 +51,10 @@ class _ChangeState extends State<Change> {
   }
 
   Widget _glassText() {
-    // int b = a * 1000 ~/ 200;
     return Text(
-      "$delay seconds",
+      "You will get notify every $delay Hour after your intake.",
       style: TextStyle(
-          fontSize: 18,
-          color: Color.fromRGBO(0, 0, 0, 1),
+          fontSize: 14,
           fontFamily: 'Muli-Bold'),
     );
   }
@@ -111,5 +116,14 @@ class _ChangeState extends State<Change> {
   _setSharedPref() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('delay', delay);
+  }
+
+  Widget _notifyText() {
+    return Center(
+        child: Text(
+      "Notification Duration",
+      style:
+          TextStyle(fontSize: 28, color: Colors.blue, fontFamily: 'Muli-Bold'),
+    ));
   }
 }

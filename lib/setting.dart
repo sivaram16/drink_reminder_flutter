@@ -30,6 +30,9 @@ class _SettingState extends State<Setting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? Colors.black
+          : Colors.white,
       body: _layout(),
     );
   }
@@ -162,10 +165,7 @@ class _SettingState extends State<Setting> {
   Widget _settingText() {
     return Text(
       "Settings",
-      style: TextStyle(
-          color: Color.fromRGBO(0, 0, 0, 1),
-          fontSize: 48,
-          fontFamily: 'Muli-Bold'),
+      style: TextStyle(fontSize: 48, fontFamily: 'Muli-Bold'),
     );
   }
 
@@ -173,7 +173,9 @@ class _SettingState extends State<Setting> {
     return Text(
       "Change your daily target",
       style: TextStyle(
-          color: Color.fromRGBO(0, 128, 255, 1),
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : Color.fromRGBO(0, 128, 255, 1),
           fontSize: 18,
           fontFamily: 'Muli-Bold'),
     );
@@ -210,7 +212,9 @@ class _SettingState extends State<Setting> {
     return Text(
       "Change notifications settings",
       style: TextStyle(
-          color: Color.fromRGBO(0, 128, 255, 1),
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : Color.fromRGBO(0, 128, 255, 1),
           fontSize: 18,
           fontFamily: 'Muli-Bold'),
     );
@@ -242,7 +246,9 @@ class _SettingState extends State<Setting> {
     return Text(
       "Reset my account",
       style: TextStyle(
-          color: Color.fromRGBO(0, 128, 255, 1),
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : Color.fromRGBO(0, 128, 255, 1),
           fontSize: 18,
           fontFamily: 'Muli-Bold'),
     );
@@ -262,7 +268,9 @@ class _SettingState extends State<Setting> {
     return Text(
       "$t",
       style: TextStyle(
-          color: Color.fromRGBO(0, 128, 255, 1),
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : Color.fromRGBO(0, 128, 255, 1),
           fontSize: 18,
           fontFamily: 'Muli-Bold'),
     );
@@ -282,7 +290,9 @@ class _SettingState extends State<Setting> {
     return Text(
       "About app",
       style: TextStyle(
-          color: Color.fromRGBO(0, 128, 255, 1),
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : Color.fromRGBO(0, 128, 255, 1),
           fontSize: 18,
           fontFamily: 'Muli-Bold'),
     );

@@ -4,6 +4,7 @@ import 'dart:ui' as prefix0;
 import 'package:drink_remainder/setting.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' as prefix1;
 import 'route.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -52,6 +53,9 @@ class _MainScreenState extends State<MainScreen>
     return WillPopScope(
       onWillPop: () => _exitApp(context),
       child: Scaffold(
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Colors.white,
         body: _layout(),
         resizeToAvoidBottomPadding: false,
       ),
@@ -105,7 +109,8 @@ class _MainScreenState extends State<MainScreen>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 _statusWidget(
-                    _statusCount("$streak"), _statusText("day streak")),
+                    _statusCount("$streak"), _statusText("day streak"),
+                    color: Color.fromRGBO(255, 159, 159, 0.51)),
                 _statusWidget(
                   _statusCount((sofar).toStringAsFixed(1)),
                   _statusText("litres drank\nso far"),
@@ -141,10 +146,7 @@ class _MainScreenState extends State<MainScreen>
   Widget _inTakeAmount() {
     return Text(
       "$count ml",
-      style: TextStyle(
-          color: Color.fromRGBO(0, 0, 0, 1),
-          fontSize: 48,
-          fontFamily: 'Muli-Bold'),
+      style: TextStyle(fontSize: 48, fontFamily: 'Muli-Bold'),
     );
   }
 
@@ -180,7 +182,9 @@ class _MainScreenState extends State<MainScreen>
       ),
       decoration: BoxDecoration(boxShadow: [
         BoxShadow(
-          color: color ?? Color.fromRGBO(255, 159, 159, 0.51),
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.transparent
+              : color,
           blurRadius: 16.0,
         ),
       ]),
@@ -191,20 +195,14 @@ class _MainScreenState extends State<MainScreen>
     return Text(
       text,
       textAlign: TextAlign.center,
-      style: TextStyle(
-          color: Color.fromRGBO(0, 0, 0, 1),
-          fontSize: 18,
-          fontFamily: 'Muli-Bold'),
+      style: TextStyle(fontSize: 18, fontFamily: 'Muli-Bold'),
     );
   }
 
   Widget _statusCount(String text) {
     return Text(
       text,
-      style: TextStyle(
-          color: Color.fromRGBO(0, 0, 0, 1),
-          fontSize: 48,
-          fontFamily: 'Muli-Bold'),
+      style: TextStyle(fontSize: 48, fontFamily: 'Muli-Bold'),
     );
   }
 
@@ -214,10 +212,13 @@ class _MainScreenState extends State<MainScreen>
         Container(
           margin: EdgeInsets.fromLTRB(0, 10, 0, 30),
           width: MediaQuery.of(context).size.width,
-          height: 260.0,
+          height: 280.0,
           child: Card(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Color.fromRGBO(52, 52, 52, 1)
+                : Color.fromRGBO(255, 255, 255, 1),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(20),
             ),
             child: Container(
                 padding: EdgeInsets.only(left: 16, right: 16),
@@ -359,9 +360,7 @@ class _MainScreenState extends State<MainScreen>
               Text(
                 "$ml ml",
                 style: TextStyle(
-                    color: Color.fromRGBO(0, 0, 0, 1),
-                    fontSize: 8,
-                    fontFamily: 'Muli-Bold'),
+                    fontSize: 8, fontFamily: 'Muli-Bold', color: Colors.black),
               )
             ],
           ),
@@ -399,7 +398,7 @@ class _MainScreenState extends State<MainScreen>
 
   _scheduleNotify() async {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    var android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var android = AndroidInitializationSettings('@mipmap/logo');
     var ios = IOSInitializationSettings();
     var initsetting = InitializationSettings(android, ios);
     flutterLocalNotificationsPlugin.initialize(initsetting);
@@ -439,7 +438,6 @@ class _MainScreenState extends State<MainScreen>
           Text(
             '${record.date.day <= 9 ? '0' + record.date.day.toString() : record.date.day}/${record.date.month <= 9 ? '0' + record.date.month.toString() : record.date.month}/${record.date.year} ',
             style: TextStyle(
-              color: Colors.black,
               fontSize: 16,
               letterSpacing: 3.0,
               fontFamily: 'Muli-Bold',
@@ -449,7 +447,6 @@ class _MainScreenState extends State<MainScreen>
           Text(
             '${record.intake / 1000} litres',
             style: TextStyle(
-              color: Colors.black,
               fontFamily: 'Muli-Bold',
               fontSize: 16,
               letterSpacing: 3.0,

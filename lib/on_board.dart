@@ -17,6 +17,9 @@ class _OnBoardState extends State<OnBoard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? Colors.black
+          : Colors.white,
       body: _layout(),
     );
   }
@@ -65,10 +68,7 @@ class _OnBoardState extends State<OnBoard> {
   Widget _selectText() {
     return Text(
       "Select your daily target",
-      style: TextStyle(
-          fontSize: 18,
-          color: Color.fromRGBO(0, 0, 0, 1),
-          fontFamily: 'Muli-Bold'),
+      style: TextStyle(fontSize: 18, fontFamily: 'Muli-Bold'),
     );
   }
 

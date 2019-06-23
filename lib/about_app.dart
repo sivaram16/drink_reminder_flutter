@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class About extends StatefulWidget {
   @override
@@ -13,6 +12,9 @@ class _AboutState extends State<About> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? Colors.black
+          : Colors.white,
       body: _layout(),
     );
   }
@@ -41,7 +43,12 @@ class _AboutState extends State<About> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            _text("An app to help you hydrate.", Colors.black, 18),
+            _text(
+                "An app to help you hydrate.",
+                Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+                18),
           ],
         ),
         ect(20),
@@ -57,20 +64,39 @@ class _AboutState extends State<About> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            _text("Sivaram S", Colors.black, 18),
+            _text(
+                "Sivaram S",
+                Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+                18),
           ],
         ),
         ect(40),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[_text("With design from", Colors.black, 14)],
+          children: <Widget>[
+            _text(
+                "With design from",
+                Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+                14)
+          ],
         ),
         ect(10),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[_text("Roshan", Colors.black, 18)],
+          children: <Widget>[
+            _text(
+                "Roshan",
+                Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+                18)
+          ],
         ),
         ect(50),
         Container(
@@ -79,7 +105,12 @@ class _AboutState extends State<About> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                _text("Made with ", Colors.black, 24),
+                _text(
+                    "Made with ",
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+                    24),
                 _text("Flutter", Color.fromRGBO(0, 128, 255, 1), 24),
                 _text(".", Colors.black, 24)
               ],
@@ -114,8 +145,8 @@ class _AboutState extends State<About> {
     return ClipOval(
       child: Image.asset(
         'assets/images/pic.png',
-        height: 250,
-        width: 250,
+        height: 200,
+        width: 200,
         fit: BoxFit.cover,
       ),
     );
