@@ -1,12 +1,12 @@
+import 'package:drink_remainder/components/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'theme.dart';
-import 'main_screen.dart';
-import 'on_board.dart';
-import 'setting.dart';
+import 'screens/about_app.dart';
+import 'screens/change_notification.dart';
+import 'screens/main_screen.dart';
+import 'screens/on_board.dart';
+import 'screens/setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'about_app.dart';
-import 'change_notification.dart';
 
 void main() async => runApp(MyAppp());
 
